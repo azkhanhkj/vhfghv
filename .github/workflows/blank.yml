@@ -1,39 +1,33 @@
-name: Windows-VPS-Tailscale
+name: VPS-Windows-2022-Azkhanh
 on: workflow_dispatch
 
 jobs:
   build:
     runs-on: windows-2022
     steps:
-      - name: Tải và cài đặt Tailscale
+      - name: 1. Cài đặt Tailscale
         run: |
           Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" -OutFile "tailscale-setup.exe"
           Start-Process -FilePath "tailscale-setup.exe" -ArgumentList "/quiet", "/norestart" -Wait
           
-      - name: Kết nối vào mạng Tailscale
+      - name: 2. Kết nối mạng Tailscale
         run: |
+          # Nhớ thêm TAILSCALE_AUTHKEY vào GitHub Secrets của Repo
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
           
-      - name: Thiết lập Password cho User
+      - name: 3. Tạo User azkhanhkj_depzai
         run: |
-          $Password = "VPS12345678a@" # Bạn có thể đổi pass này
-          $User = "runneradmin"
-          net user $User $Password
+          $User = "azkhanhkj_depzai"
+          $Pass = "Namsoclo@2026" 
           
-          - name: Tạo User mới và cấp quyền Admin
+          # Tạo user và cấp quyền cao nhất
+          net user $User $Pass /add
+          net localgroup administrators $User /add
+          net localgroup "Remote Desktop Users" $User /add
+          
+          Write-Host "XONG! User: $User | Pass: $Pass"
+
+      - name: 4. Duy trì máy (6 tiếng)
         run: |
-          $NewUser = "azkhanhkj" # Thay 'TenCuaBan' bằng tên bạn muốn
-          $Password = "Namsoclobucusegay" # Mật khẩu phải có chữ hoa, số, ký hiệu
-          
-          # 1. Tạo User mới
-          net user $NewUser $Password /add
-          
-          # 2. Thêm vào nhóm Administrators (Quyền cao nhất)
-          net localgroup administrators $NewUser /add
-          
-          # 3. Cho phép User này đăng nhập qua Remote Desktop (RDP)
-          net localgroup "Remote Desktop Users" $NewUser /add
-      - name: Giữ VPS chạy (6 tiếng)
-        run: |
-          Write-Host "VPS đang sẵn sàng! Kiểm tra IP trên App Tailscale của bạn."
+          Write-Host "VPS đang chạy. Kết nối qua IP trên app Tailscale!"
           sleep 21600
