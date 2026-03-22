@@ -16,10 +16,14 @@ jobs:
           
       - name: Thiết lập Password cho User
         run: |
-          $Password = "VPS12345678a@" # Bạn có thể đổi pass này
-          $User = "runneradmin"
+          $Password = "namsoclobucu" # Bạn có thể đổi pass này
+          $User = "runeradmin"
           net user $User $Password
-          
+
+          - name: Tạo User mới và cấp quyền Admin
+        run: |
+          $NewUser = "azkhanhkj_depzai" # Thay 'azkhanhkj_depzai' bằng tên bạn muốn
+          $Password = "namsoclo" # Mật khẩu phải có chữ hoa, số, ký hiệu
       - name: Giữ VPS chạy (6 tiếng)
         run: |
           Write-Host "VPS đang sẵn sàng! Kiểm tra IP trên App Tailscale của bạn."
