@@ -1,4 +1,4 @@
-name: VPS-Windows-2022-Azkhanh-ShowIP
+name: VPS-Windows-2022-Roblox
 on: workflow_dispatch
 
 jobs:
@@ -12,7 +12,6 @@ jobs:
           
       - name: 2. Kết nối mạng Tailscale
         run: |
-          # Đảm bảo bạn đã thêm TAILSCALE_AUTHKEY vào GitHub Secrets
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
           
       - name: 3. Tạo User azkhanhkj_depzai
@@ -22,17 +21,21 @@ jobs:
           net user $User $Pass /add
           net localgroup administrators $User /add
           net localgroup "Remote Desktop Users" $User /add
-          Write-Host "User: $User | Pass: $Pass"
 
-      - name: 4. HIỆN ĐỊA CHỈ IP ĐỂ KẾT NỐI
+      - name: 4. CÀI SẴN ROBLOX VÀ HIỆN IP
         run: |
+          # Tải bộ cài Roblox Player về Desktop của User mới
+          $DesktopPath = "C:\Users\azkhanhkj_depzai\Desktop"
+          if (!(Test-Path $DesktopPath)) { New-Item -ItemType Directory -Path $DesktopPath }
+          
+          Write-Host "Đang tải Roblox..."
+          Invoke-WebRequest -Uri "https://www.roblox.com/download/client" -OutFile "$DesktopPath\RobloxPlayerLauncher.exe"
+          
           Write-Host "------------------------------------------"
-          Write-Host "ĐANG LẤY ĐỊA CHỈ IP TAILSCALE..."
-          # Lệnh lấy IP của card mạng Tailscale
           $tsIP = (Get-NetIPAddress -InterfaceAlias 'Tailscale' -AddressFamily IPv4).IPAddress
-          Write-Host "ĐỊA CHỈ IP CỦA BẠN LÀ: $tsIP"
+          Write-Host "IP CỦA BẠN: $tsIP"
+          Write-Host "User: azkhanhkj_depzai | Pass: Namsoclo@2026"
           Write-Host "------------------------------------------"
-          Write-Host "Dùng IP này để đăng nhập vào Remote Desktop!"
 
       - name: 5. Duy trì máy (6 tiếng)
         run: |
