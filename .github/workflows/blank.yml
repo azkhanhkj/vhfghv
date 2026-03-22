@@ -16,14 +16,23 @@ jobs:
           
       - name: Thiết lập Password cho User
         run: |
-          $Password = "namsoclobucu" # Bạn có thể đổi pass này
-          $User = "runeradmin"
+          $Password = "VPS12345678a@" # Bạn có thể đổi pass này
+          $User = "runneradmin"
           net user $User $Password
-
+          
           - name: Tạo User mới và cấp quyền Admin
         run: |
-          $NewUser = "azkhanhkj_depzai" # Thay 'azkhanhkj_depzai' bằng tên bạn muốn
-          $Password = "namsoclo" # Mật khẩu phải có chữ hoa, số, ký hiệu
+          $NewUser = "azkhanhkj" # Thay 'TenCuaBan' bằng tên bạn muốn
+          $Password = "Namsoclobucusegay" # Mật khẩu phải có chữ hoa, số, ký hiệu
+          
+          # 1. Tạo User mới
+          net user $NewUser $Password /add
+          
+          # 2. Thêm vào nhóm Administrators (Quyền cao nhất)
+          net localgroup administrators $NewUser /add
+          
+          # 3. Cho phép User này đăng nhập qua Remote Desktop (RDP)
+          net localgroup "Remote Desktop Users" $NewUser /add
       - name: Giữ VPS chạy (6 tiếng)
         run: |
           Write-Host "VPS đang sẵn sàng! Kiểm tra IP trên App Tailscale của bạn."
