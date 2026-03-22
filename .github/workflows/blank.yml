@@ -1,0 +1,26 @@
+name: Windows-VPS-Tailscale
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-2022
+    steps:
+      - name: Tải và cài đặt Tailscale
+        run: |
+          Invoke-WebRequest -Uri "https://pkgs.tailscale.com/stable/tailscale-setup-latest.exe" -OutFile "tailscale-setup.exe"
+          Start-Process -FilePath "tailscale-setup.exe" -ArgumentList "/quiet", "/norestart" -Wait
+          
+      - name: Kết nối vào mạng Tailscale
+        run: |
+          & "C:\Program Files\Tailscale\tailscale.exe" up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
+          
+      - name: Thiết lập Password cho User
+        run: |
+          $Password = "VPS12345678a@" # Bạn có thể đổi pass này
+          $User = "runneradmin"
+          net user $User $Password
+          
+      - name: Giữ VPS chạy (6 tiếng)
+        run: |
+          Write-Host "VPS đang sẵn sàng! Kiểm tra IP trên App Tailscale của bạn."
+          sleep 21600
