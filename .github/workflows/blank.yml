@@ -1,4 +1,4 @@
-name: VPS-Windows-2022-Azkhanh
+name: VPS-Windows-2022-Azkhanh-ShowIP
 on: workflow_dispatch
 
 jobs:
@@ -12,22 +12,28 @@ jobs:
           
       - name: 2. Kết nối mạng Tailscale
         run: |
-          # Nhớ thêm TAILSCALE_AUTHKEY vào GitHub Secrets của Repo
+          # Đảm bảo bạn đã thêm TAILSCALE_AUTHKEY vào GitHub Secrets
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
           
       - name: 3. Tạo User azkhanhkj_depzai
         run: |
           $User = "azkhanhkj_depzai"
           $Pass = "Namsoclo@2026" 
-          
-          # Tạo user và cấp quyền cao nhất
           net user $User $Pass /add
           net localgroup administrators $User /add
           net localgroup "Remote Desktop Users" $User /add
-          
-          Write-Host "XONG! User: $User | Pass: $Pass"
+          Write-Host "User: $User | Pass: $Pass"
 
-      - name: 4. Duy trì máy (6 tiếng)
+      - name: 4. HIỆN ĐỊA CHỈ IP ĐỂ KẾT NỐI
         run: |
-          Write-Host "VPS đang chạy. Kết nối qua IP trên app Tailscale!"
+          Write-Host "------------------------------------------"
+          Write-Host "ĐANG LẤY ĐỊA CHỈ IP TAILSCALE..."
+          # Lệnh lấy IP của card mạng Tailscale
+          $tsIP = (Get-NetIPAddress -InterfaceAlias 'Tailscale' -AddressFamily IPv4).IPAddress
+          Write-Host "ĐỊA CHỈ IP CỦA BẠN LÀ: $tsIP"
+          Write-Host "------------------------------------------"
+          Write-Host "Dùng IP này để đăng nhập vào Remote Desktop!"
+
+      - name: 5. Duy trì máy (6 tiếng)
+        run: |
           sleep 21600
