@@ -1,4 +1,4 @@
-name: VPS-Azkhanh-Auto-Repeat
+name: vps-azkhanhkj
 on:
   workflow_dispatch: # Chạy bằng tay khi bạn muốn
   schedule:
@@ -17,7 +17,7 @@ jobs:
         run: |
           & "C:\Program Files\Tailscale\tailscale.exe" up --authkey ${{ secrets.TAILSCALE_AUTHKEY }}
           
-      - name: 3. Tạo User azkhanhkj_depzai và Pass Namsoclo@2026
+      - name: 3. tao user
         run: |
           $User = "azkhanhkj_depzai"
           $Pass = "Namsoclo@2026" 
@@ -25,14 +25,14 @@ jobs:
           net localgroup administrators $User /add
           net localgroup "Remote Desktop Users" $User /add
 
-      - name: 4. Chống phát hiện máy ảo (Anti-VM)
+      - name: 4. anti vm
         run: |
           reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0" /v "ProcessorNameString" /t REG_SZ /d "Intel(R) Core(TM) i7-10700K CPU @ 3.80GHz" /f
           reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS" /v "SystemManufacturer" /t REG_SZ /d "ASUSTeK COMPUTER INC." /f
           reg add "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\BIOS" /v "SystemProductName" /t REG_SZ /d "ROG STRIX Z490-E GAMING" /f
           Set-Service -Name "VMTools" -Status Stopped -ErrorAction SilentlyContinue
 
-      - name: 5. Tải sẵn Roblox và Hiện IP
+      - name: 5. ip
         run: |
           $DesktopPath = "C:\Users\azkhanhkj_depzai\Desktop"
           if (!(Test-Path $DesktopPath)) { New-Item -ItemType Directory -Path $DesktopPath }
@@ -44,7 +44,7 @@ jobs:
           Write-Host "User: azkhanhkj_depzai | Pass: Namsoclo@2026"
           Write-Host "------------------------------------------"
 
-      - name: 6. Duy trì máy (6 tiếng)
+      - name: 6. duy trì
         run: |
           # 21600 giây = 6 tiếng
           sleep 21600
